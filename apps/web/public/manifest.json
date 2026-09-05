@@ -1,0 +1,16 @@
+{
+  "short_name": "Postty",
+  "name": "Postty — Modern Cross-Platform API Client",
+  "description": "Fast, offline-first cross-platform API testing client & Postman alternative.",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "display": "standalone"
+}

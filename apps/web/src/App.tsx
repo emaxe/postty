@@ -11,12 +11,12 @@ import {
   saveStoredCollections,
   saveStoredEnvironments,
   setActiveEnvironmentId,
-} from './storage.js';
-import { Header } from './components/Header.js';
-import { Sidebar } from './components/Sidebar.js';
-import { RequestEditor } from './components/RequestEditor.js';
-import { ResponseViewer } from './components/ResponseViewer.js';
-import { EnvironmentModal } from './components/EnvironmentModal.js';
+} from './storage';
+import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
+import { RequestEditor } from './components/RequestEditor';
+import { ResponseViewer } from './components/ResponseViewer';
+import { EnvironmentModal } from './components/EnvironmentModal';
 
 export const App: React.FC = () => {
   const [environments, setEnvironments] = useState<Environment[]>(getStoredEnvironments);

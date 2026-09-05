@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Collection, HttpMethod, RequestItem } from '@postty/contracts';
-import { HistoryItem } from '../storage.js';
+import { HistoryItem } from '../storage';
 import {
   Folder,
   FolderOpen,
