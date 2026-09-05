@@ -288,14 +288,40 @@ async fn run_tui() -> Result<()> {
                 Event::Mouse(mouse) => {
                     match mouse.kind {
                         MouseEventKind::Down(MouseButton::Left) => {
-                            // Hit-test for sidebar requests or tabs
-                            if mouse.column < 32 && mouse.row >= 3 {
-                                let clicked_idx = (mouse.row - 3) as usize;
+                            // 1. Sidebar requests hit-test:
+                            // Row 0-2: Header block
+                            // Row 3: Top border of Sidebar block
+                            // Rows 4+: List items (row 4 = index 0, row 5 = index 1, etc.)
+                            if mouse.column < 32 && mouse.row >= 4 {
+                                let offset = state.list_state.offset();
+                                let clicked_idx = (mouse.row - 4) as usize + offset;
                                 if clicked_idx < state.requests.len() {
                                     state.list_state.select(Some(clicked_idx));
+                                    state.active_panel = ActivePanel::Sidebar;
                                     state.response = None;
                                     state.response_scroll = 0;
                                 }
+                            }
+                            // 2. Click on Tabs (Params, Headers, Body, Auth on row 6)
+                            else if mouse.row == 6 && mouse.column >= 33 {
+                                state.active_panel = ActivePanel::Request;
+                                if mouse.column < 46 {
+                                    state.selected_tab = 0;
+                                } else if mouse.column < 59 {
+                                    state.selected_tab = 1;
+                                } else if mouse.column < 69 {
+                                    state.selected_tab = 2;
+                                } else {
+                                    state.selected_tab = 3;
+                                }
+                            }
+                            // 3. Click on [ SEND (Enter) ] button or URL bar on row 4
+                            else if mouse.row == 4 && mouse.column >= 33 {
+                                state.execute_current().await;
+                            }
+                            // 4. Click on Response pane to focus it
+                            else if mouse.row >= 11 && mouse.column >= 32 {
+                                state.active_panel = ActivePanel::Response;
                             }
                         }
                         MouseEventKind::ScrollDown => {
