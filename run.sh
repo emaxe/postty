@@ -72,7 +72,7 @@ run() {
         ;;
       4)
         printf "${GREEN}==> Запуск Desktop приложения (Tauri v2) ...${RESET}\n"
-        pnpm turbo dev --filter=@postty/desktop
+        pnpm --filter @postty/desktop dev
         ;;
       5)
         printf "${GREEN}==> Запуск Mobile приложения (Expo) ...${RESET}\n"

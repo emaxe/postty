@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "identifier": "dev.postty.desktop",
   "build": {
+    "beforeDevCommand": "pnpm run vite",
+    "beforeBuildCommand": "pnpm run build",
     "frontendDist": "../dist",
     "devUrl": "http://localhost:3001"
   },
