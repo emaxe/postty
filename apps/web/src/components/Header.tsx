@@ -1,12 +1,13 @@
 import React from 'react';
 import { Environment } from '@postty/contracts';
-import { Layers, Settings, Cloud, User, ChevronDown } from 'lucide-react';
+import { Layers, Settings, Cloud, User, Upload } from 'lucide-react';
 
 interface HeaderProps {
   environments: Environment[];
   activeEnvId: string | null;
   onSelectEnv: (id: string | null) => void;
   onOpenEnvModal: () => void;
+  onOpenImportModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,6 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeEnvId,
   onSelectEnv,
   onOpenEnvModal,
+  onOpenImportModal,
 }) => {
   const activeEnv = environments.find((e) => e.id === activeEnvId);
 
@@ -38,6 +40,16 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Center / Right controls */}
       <div className="flex items-center gap-3">
+        {/* Global Import Button */}
+        <button
+          onClick={onOpenImportModal}
+          title="Import from cURL, Postman Collection, or OpenAPI"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-semibold transition-colors shadow-sm"
+        >
+          <Upload className="w-3.5 h-3.5 text-indigo-400" />
+          <span>Import</span>
+        </button>
+
         {/* Environment Picker */}
         <div className="flex items-center bg-postty-card border border-postty-border rounded-md px-2.5 py-1 text-xs">
           <span className="text-slate-500 mr-2">Env:</span>

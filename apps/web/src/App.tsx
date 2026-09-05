@@ -17,6 +17,7 @@ import { Sidebar } from './components/Sidebar';
 import { RequestEditor } from './components/RequestEditor';
 import { ResponseViewer } from './components/ResponseViewer';
 import { EnvironmentModal } from './components/EnvironmentModal';
+import { ImportModal } from './components/ImportModal';
 
 export const App: React.FC = () => {
   const [environments, setEnvironments] = useState<Environment[]>(getStoredEnvironments);
@@ -33,6 +34,7 @@ export const App: React.FC = () => {
   const [activeResponse, setActiveResponse] = useState<HttpResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isEnvModalOpen, setIsEnvModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const activeRequest = useMemo(
     () => requests.find((r) => r.id === activeRequestId) || requests[0] || null,
@@ -155,6 +157,41 @@ export const App: React.FC = () => {
     saveStoredEnvironments(updated);
   };
 
+  // Import Modal Handlers
+  const handleApplyToCurrentRequest = (updated: Partial<RequestItem>) => {
+    if (!activeRequest) return;
+    const newReq: RequestItem = {
+      ...activeRequest,
+      ...updated,
+      updatedAt: new Date().toISOString(),
+    };
+    handleRequestChange(newReq);
+    saveStoredCollections(
+      collections,
+      requests.map((r) => (r.id === newReq.id ? newReq : r))
+    );
+  };
+
+  const handleCreateImportedRequest = (collectionId: string, newReq: RequestItem) => {
+    const updatedRequests = [...requests, newReq];
+    setRequests(updatedRequests);
+    setActiveRequestId(newReq.id);
+    setActiveResponse(null);
+    saveStoredCollections(collections, updatedRequests);
+  };
+
+  const handleImportCollection = (newCol: Collection, newColRequests: RequestItem[]) => {
+    const updatedCollections = [...collections, newCol];
+    const updatedRequests = [...requests, ...newColRequests];
+    setCollections(updatedCollections);
+    setRequests(updatedRequests);
+    if (newColRequests.length > 0) {
+      setActiveRequestId(newColRequests[0].id);
+      setActiveResponse(null);
+    }
+    saveStoredCollections(updatedCollections, updatedRequests);
+  };
+
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-postty-bg text-slate-100 font-sans">
       {/* Top Global Navigation Bar */}
@@ -163,6 +200,7 @@ export const App: React.FC = () => {
         activeEnvId={activeEnvId}
         onSelectEnv={handleSelectEnv}
         onOpenEnvModal={() => setIsEnvModalOpen(true)}
+        onOpenImportModal={() => setIsImportModalOpen(true)}
       />
 
       {/* Main Workspace Layout */}
@@ -191,6 +229,7 @@ export const App: React.FC = () => {
                   onSend={handleSend}
                   onSave={handleSaveRequest}
                   isLoading={isLoading}
+                  onOpenImportModal={() => setIsImportModalOpen(true)}
                 />
               </section>
 
@@ -223,6 +262,18 @@ export const App: React.FC = () => {
         environments={environments}
         onSaveEnvironments={handleSaveEnvironments}
         activeEnvId={activeEnvId}
+      />
+
+      {/* Import Modal (cURL, Postman, OpenAPI) */}
+      <ImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        collections={collections}
+        activeCollectionId={activeRequest?.collectionId || collections[0]?.id || null}
+        activeRequest={activeRequest}
+        onApplyToCurrentRequest={handleApplyToCurrentRequest}
+        onCreateRequest={handleCreateImportedRequest}
+        onImportCollection={handleImportCollection}
       />
     </div>
   );
