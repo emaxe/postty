@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "apps/tui",
+    "apps/desktop/src-tauri",
     "crates/postty-core",
     "crates/postty-sync",
 ]
