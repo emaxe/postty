@@ -1,0 +1,15 @@
+[package]
+name = "postty-sync"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+postty-core = { path = "../postty-core" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+anyhow = { workspace = true }
+rusqlite = { workspace = true }
